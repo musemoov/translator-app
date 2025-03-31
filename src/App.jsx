@@ -2,16 +2,21 @@ import { useState } from "react";
 import TranslatorStart from "./Components/TranslatorStart";
 import TranslatorApp from "./Components/TranslatorApp";
 import WorldMap from "./Components/WorldMap";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+import { motion, AnimatePresence } from "framer-motion";
 
 const App = () => {
   const [showTranslatorApp, setShowTranslatorApp] = useState(false);
 
   return (
-    
     <div className="w-full h-screen bg-[#0e0e0e] relative overflow-hidden flex justify-center items-center">
       {/*  월드맵을 가장 아래에, 전체 배경으로 */}
-      <div className="absolute inset-0 z-0">
+      <motion.div
+        className="absolute inset-0 z-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 5 }} // 천천히 나타나는 효과
+      >
         <WorldMap
           dots={[
             {
@@ -40,32 +45,40 @@ const App = () => {
             },
           ]}
         />
-      </div>
+      </motion.div>
 
-      <div
+      <motion.div
+        key={showTranslatorApp ? "app" : "start"}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 5 }}
         className=" 
         w-[90%] max-w-2xl max-[392px]:h-[90%] sm:h-auto
   bg-white/2 backdrop-blur-[3px] border border-white/10
   shadow-[0_0_60px_rgba(255,255,255,0.08)]
   rounded-xl z-10 flex flex-col relative
   ring-1 ring-white/5
-  ">
+  "
+      >
         {/* 상단 반사 효과 */}
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 4 }}
           className="absolute inset-0 before:absolute before:inset-x-0 before:top-0 before:h-1/2 
       before:bg-gradient-to-b before:from-white/10 before:to-transparent before:rounded-xl z-0"
-        ></div>
+        ></motion.div>
 
-        {showTranslatorApp ? (
-          <TranslatorApp onClose={() => setShowTranslatorApp(false)} />
-        ) : (
-          <TranslatorStart onStart={() => setShowTranslatorApp(true)} />
-        )}
-      </div>
+        <AnimatePresence mode="wait">
+          {showTranslatorApp ? (
+            <TranslatorApp onClose={() => setShowTranslatorApp(false)} />
+          ) : (
+            <TranslatorStart onStart={() => setShowTranslatorApp(true)} />
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
-
-
-
   );
 };
 
